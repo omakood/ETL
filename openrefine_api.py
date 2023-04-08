@@ -4,9 +4,6 @@ from urllib.parse import urlparse
 from urllib.parse import parse_qs
 
 ontorefine_server = 'http://127.0.0.1:3333'
-# filename of csv as project name in OntoRefine
-csv_file = "testiks.csv"
-
 headers = {'Accept': 'application/json'}
 
 '''
@@ -40,6 +37,7 @@ def connection_to_server_post(url, data={}):
         return error
 
 
+# GET CRSF TOKEN
 def get_token():
     token_url = "http://127.0.0.1:3333/command/core/get-csrf-token"
     r = (connection_to_server_get(token_url))

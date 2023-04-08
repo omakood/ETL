@@ -18,9 +18,10 @@
 
 ## Transform
 - Kasutatakse projekti tarbeks loodud Openrefine tarkvara API funktsioone.
-- Luuakse uus projekt
-- Imporditakse andmed cvs failist
-- Muudetakse tulpade andmetüüpe
+- Luuakse uus projekt.
+- Imporditakse andmed cvs failist.
+- Laetakse salvestatud operatsioonide json fail.
+- Muudetakse tulpade andmetüüpe.
 - Eksporditakse andmed ajutisse cvs faili.
 
 ## Load
@@ -31,7 +32,7 @@
 
 ## Kasutamine
 - API kasutamiseks on vajalik eelnevalt käivitada Openrefine tarkvara.
-- Käivitada ETL.py fail
-- ETL protsess peaks toimima automaatselt
+- Käivitada ETL.py fail (python3 ETL.py).
+- ETL protsess peaks toimima automaatselt.
 
 

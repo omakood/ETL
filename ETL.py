@@ -4,17 +4,23 @@ import os
 import sqlite3
 import openrefine_api as api
 
-dir = r'./temp' 
+dir = r'./temp'
+seirejaamad = {"Tartu":8,"Vilsandi":9}
+seirejaam="Tartu"
 
 proj_nimi = (input("Sisestage uue projekti nimi : "))
 
-baasi_nimi = (input("Sisestage SQLite andmebaasi nimi(vaikimisis: ETL.sqlite3) : ") or "ETL.sqlite3")
+baasi_nimi = (input(
+    "Sisestage SQLite andmebaasi nimi(vaikimisis: ETL.sqlite3) : ") or "ETL.sqlite3")
 
-faili_formaat = (input("Valige andmefaili formaat(vaikimisi: .csv) : ") or "csv")
+faili_formaat = (
+    input("Valige andmefaili formaat(vaikimisi: csv) : ") or "csv")
 
-history_fail = (input("Valige Openrefain history fail(vaikimisi: history.json) : ") or "history.json")
+history_fail = (input(
+    "Valige Openrefain history fail(vaikimisi: history.json) : ") or "history.json")
 
-or_server_url_port=(input("Openrefine serveri url:port(vaikimisi: http://127.0.0.1:3333/) : ") or "http://127.0.0.1:3333/")
+or_server_url_port = (input(
+    "Openrefine serveri url:port(vaikimisi: http://127.0.0.1:3333/) : ") or "http://127.0.0.1:3333/")
 
 input("Vajalik on Openrefin programmi käivitamine! (Enter)")
 
@@ -27,9 +33,10 @@ start_time = datetime.datetime.now()
 if not os.path.exists(dir):
     os.makedirs(dir)
 
-#Fetch data from web
+# Fetch data from web
 
 print("Laeme andmed veebilehelt")
+
 
 def fetch_air_range(station_id, date_from, date_until):
     url = 'http://airviro.klab.ee/station/csv'
@@ -45,6 +52,7 @@ def fetch_air_range(station_id, date_from, date_until):
     response = requests.post(url, data)
     return response.text
 
+
 def get_first_and_last_day_of_month(year, month):
     # Get the first day of the month
     first_day = datetime.date(year, month, 1)
@@ -53,19 +61,21 @@ def get_first_and_last_day_of_month(year, month):
     if month == 12:
         num_days = 31
     else:
-        num_days = (datetime.date(year, month+1, 1) - datetime.timedelta(days=1)).day
+        num_days = (datetime.date(year, month+1, 1) -
+                    datetime.timedelta(days=1)).day
 
     # Get the last day of the month
     last_day = datetime.date(year, month, num_days)
 
     return first_day, last_day
 
+
 for month in range(1, 13):
     first_day, last_day = get_first_and_last_day_of_month(2022, month)
-    #print(first_day, last_day)
+    # print(first_day, last_day)
 
-    data = fetch_air_range(8, first_day, last_day)
-    with open(f'./temp/air{month}.csv','w',encoding='utf-8-sig') as f:
+    data = fetch_air_range(seirejaamad[seirejaam], first_day, last_day)
+    with open(f'./temp/air{month}.csv', 'w', encoding='utf-8-sig') as f:
         f.write(data)
 
 data = []
@@ -87,24 +97,25 @@ for f in os.listdir(dir):
 print("Andmed on veebilehelt alla laetud")
 
 
-#Openrefian API
+# Openrefian API
 
 print("Openrefine operatsioonidega alustatud")
 
-projekt_id=api.create_from_upload("air_2022.csv", proj_nimi)
+projekt_id = api.create_from_upload("air_2022.csv", proj_nimi)
 
 api.apply_operations(projekt_id, history_fail)
 
 api.export_to_file(projekt_id, faili_formaat)
 
-delete_or_project = (input("Kustutame ajutiselt loodud Openrefine projekti?(Y/N) ") or "Y")
+delete_or_project = (
+    input("Kustutame ajutiselt loodud Openrefine projekti?(Y/N) ") or "Y")
 if delete_or_project == "Y":
     api.delete_project(projekt_id)
 
 print("Openrefine operatsioonidega lõpetatud")
 
 
-#SQLite database
+# SQLite database
 
 print("SQLite andmebaasi loomine")
 
@@ -116,11 +127,12 @@ c.execute("""CREATE TABLE IF NOT EXISTS algsed_andmed (Kuupäev TEXT, SO2 REAL, 
 
 print("Andmete importimine andmebaasi")
 
-with open('exported_file.csv','r',encoding='utf-8-sig') as file:
-    no_records=0
+with open('exported_file.csv', 'r', encoding='utf-8-sig') as file:
+    no_records = 0
     next(file)
     for row in file:
-        c.execute("INSERT INTO algsed_andmed VALUES (?,?,?,?,?,?,?,?,?,?)",row.split(","))
+        c.execute(
+            "INSERT INTO algsed_andmed VALUES (?,?,?,?,?,?,?,?,?,?)", row.split(","))
         conn.commit()
         no_records += 1
 
@@ -132,7 +144,7 @@ GROUP by Day;""")
 
 c.execute("""CREATE TABLE IF NOT EXISTS kuukeskmine AS SELECT strftime('%m',Kuupäev) Month, AVG(SO2), AVG(NO2), AVG(CO), AVG(O3), AVG(PM10),AVG(PM2point5),AVG(TEMP),AVG(WD10),AVG(WS10)
 FROM algsed_andmed
-GROUP by Month;""")  
+GROUP by Month;""")
 
 print("Tabelid andmebaasi loodud")
 
@@ -145,18 +157,20 @@ os.rmdir(dir)
 print("Ajutised failid kustutatud")
 
 end_time = datetime.datetime.now()
-aeg=end_time - start_time
+aeg = end_time - start_time
 
 print(" ")
 
 message = f"KOKKUVÕTE: \n"\
-    f"------------------------------------\n"\
-    f"Kuupäev: {datetime.datetime.now()} \n"\
+    f"--------------------------------------\n"\
+    f"Asukoht: {seirejaam} \n"\
+    f"Periood: 2022 aasta \n"\
     f"Projekti nimi: {proj_nimi} \n"\
     f"Sisend failiformaat: {faili_formaat} \n"\
     f"Operefine operations fail: {history_fail} \n"\
     f"Loodud SQLite andmebaas: {baasi_nimi} \n"\
     f"Töödeldud ridade arv: {no_records} \n"\
+    f"Kuupäev: {datetime.datetime.now()} \n"\
     f"Kulunud aeg: {aeg}"
 
 print(message)
