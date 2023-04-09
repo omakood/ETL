@@ -22,9 +22,9 @@ history_fail = (input(
 or_server_url_port = (input(
     "Openrefine serveri url:port(vaikimisi: http://127.0.0.1:3333/) : ") or "http://127.0.0.1:3333/")
 
-input("Vajalik on Openrefin programmi käivitamine! (Enter)")
+input("Vajalik on töötav Openrefine programm ! (Enter)")
 
-projekt_start = (input("Jätkame projektiga?(Y/N) ") or "Y")
+projekt_start = (input("Jätkame projektiga?(Y/N), vaikimisi 'Y' ") or "Y")
 if projekt_start == "N":
     exit()
 
@@ -108,7 +108,7 @@ api.apply_operations(projekt_id, history_fail)
 api.export_to_file(projekt_id, faili_formaat)
 
 delete_or_project = (
-    input("Kustutame ajutiselt loodud Openrefine projekti?(Y/N) ") or "Y")
+    input("Kustutame ajutiselt loodud Openrefine projekti?(Y/N), vaikimisi 'N' ") or "N")
 if delete_or_project == "Y":
     api.delete_project(projekt_id)
 
@@ -167,7 +167,7 @@ message = f"KOKKUVÕTE: \n"\
     f"Periood: 2022 aasta \n"\
     f"Projekti nimi: {proj_nimi} \n"\
     f"Sisend failiformaat: {faili_formaat} \n"\
-    f"Operefine operations fail: {history_fail} \n"\
+    f"Openrefine operations fail: {history_fail} \n"\
     f"Loodud SQLite andmebaas: {baasi_nimi} \n"\
     f"Töödeldud ridade arv: {no_records} \n"\
     f"Kuupäev: {datetime.datetime.now()} \n"\
