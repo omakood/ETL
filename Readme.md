@@ -1,5 +1,5 @@
-# ETL projekt
-
+# ETL projekt Eesti välisõhu andmete põhjal
+## Mõõdetavad parameetrid:
 | Attr  | example value | unit    | Description                 |
 | ----- | ------------- | ------- | --------------------------- |
 | SO2   | 0,23          | µg/m³ | Vääveldioksiid            |
@@ -22,11 +22,11 @@
 - Imporditakse andmed cvs failist.
 - Laetakse salvestatud operatsioonide json fail.
 - Muudetakse tulpade andmetüüpe.
-- Eksporditakse andmed ajutisse cvs faili.
+- Eksporditakse andmed ajutisse csv faili.
 
 ## Load
 - Luuakse SQLite andmebaas.
-- Imporditakse andmed cvs failist.
+- Imporditakse andmed csv failist.
 - Luuakse uued tabelid: päevakeskmine ja kuukeskmine.
 - Arvutakse keskmised väärtused ja lisatakse tabelitesse.
 
@@ -34,5 +34,6 @@
 - API kasutamiseks on vajalik eelnevalt käivitada Openrefine tarkvara.
 - Käivitada ETL.py fail (python3 ETL.py).
 - ETL protsess peaks toimima automaatselt.
+- Testitud Windowsis ja Linuxis
 
 
