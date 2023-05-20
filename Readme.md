@@ -32,7 +32,7 @@
 
 ## Kasutamine
 - API kasutamiseks on vajalik eelnevalt käivitada Openrefine tarkvara.
-- Käivitada ETL.py fail (python3 ETL.py).
+- Käivitada ETL.py fail (ETL.py ja openrefine_api.py failid peavad asuma samas kataloogis)
 - ETL protsess peaks toimima automaatselt.
 - Testitud Windowsis ja Linuxis
 
